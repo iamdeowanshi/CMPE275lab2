@@ -1,4 +1,4 @@
-package main.java.tictok.game.sponsor;
+package tictok.game.sponsor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,11 +30,6 @@ public class SponsorController {
 
         Sponsor s = new Sponsor(id,name,desc,address);
         sponsorservice.addSponsor(s);
-
-
-
-
-
         return "Hello" + " " + name + " " + desc + " " + address ;
     }
 

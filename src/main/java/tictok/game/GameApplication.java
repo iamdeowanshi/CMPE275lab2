@@ -1,4 +1,4 @@
-package main.java.tictok.game;
+package tictok.game;
 
 import org.springframework.boot.SpringApplication;
 
