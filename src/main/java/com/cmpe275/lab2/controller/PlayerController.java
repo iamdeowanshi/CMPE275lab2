@@ -48,18 +48,18 @@ public class PlayerController {
 		return player;
 	}
 
-	@PatchMapping(value="/player/{id}")
+	@PostMapping(value="/player/{id}")
 	public @ResponseBody
 	Player updatePlayer(@PathVariable("id") long PlayerId,
-						@RequestParam(value="firstname",required=false)String firstName,
-						@RequestParam(value = "lastname", required = false) String lastName,
+						@RequestParam(value="firstname",required=true)String firstName,
+						@RequestParam(value = "lastname", required = true) String lastName,
 						@RequestParam(value = "description", required = false) String description,
-						@RequestParam(value = "email", required = false) String email,
+						@RequestParam(value = "email", required = true) String email,
 						@RequestParam(value = "street", required = false) String street,
 						@RequestParam(value = "city", required = false) String city,
 						@RequestParam(value = "state", required = false) String state,
 						@RequestParam(value = "zip", required = false) String zip,
-                        @RequestParam(value = "sponsor_id") Long sponsorId) {
+                        			@RequestParam(value = "sponsor") Long sponsorId, , required = false) {
 
 		Player player = this.playerService.getPlayer(PlayerId);
 
@@ -112,7 +112,7 @@ public class PlayerController {
 
 		return "Deleted Successfully!";
 	}
-	@GetMapping(value="/opponents/{id1}/{id2}")
+	@PutMapping(value="/opponents/{id1}/{id2}")
 	public @ResponseBody
 	String insertOpponent(@PathVariable("id1") long PlayerId1, @PathVariable("id2") long PlayerId2) {
 		Player player1 = playerService.getPlayer(PlayerId1);
