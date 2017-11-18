@@ -34,7 +34,7 @@ public class PlayerController {
 						@RequestParam(value = "city", required = false) String city,
 						@RequestParam(value = "state", required = false) String state,
 						@RequestParam(value = "zip", required = false) String zip,
-                        @RequestParam(value = "sponsor_id") Long sponsorId) {
+                        @RequestParam(value = "sponsor_id", required = false) Long sponsorId) {
 
 		Player player = new Player(firstName,lastName,email,description,street,city,state,zip);
 
