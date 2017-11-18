@@ -34,7 +34,11 @@ public class PlayerController {
 						@RequestParam(value = "city", required = false) String city,
 						@RequestParam(value = "state", required = false) String state,
 						@RequestParam(value = "zip", required = false) String zip,
+<<<<<<< HEAD
                         @RequestParam(value = "sponsor", required = false) Long sponsorId) {
+=======
+                        			@RequestParam(value = "sponsor", required = false) Long sponsorId) {
+>>>>>>> 14afb52bd8fb3bccea61fa17846776d068d90bfe
 
 		Player player = new Player(firstName,lastName,email,description,street,city,state,zip);
 
@@ -59,7 +63,7 @@ public class PlayerController {
 						@RequestParam(value = "city", required = false) String city,
 						@RequestParam(value = "state", required = false) String state,
 						@RequestParam(value = "zip", required = false) String zip,
-                        	@RequestParam(value = "sponsor", required = false) Long sponsorId) {
+                        			@RequestParam(value = "sponsor") Long sponsorId, , required = false) {
 
 		Player player = this.playerService.getPlayer(PlayerId);
 
