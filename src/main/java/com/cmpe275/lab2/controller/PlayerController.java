@@ -17,8 +17,14 @@ public class PlayerController {
 	private PlayerService playerService;
 	@Autowired
     private SponsorService sponsorService;
+	
+	@GetMapping(value = "/")
+	public @ResponseBody
+	String home() {
+		return "Hello CMPE 275 LAB2";
+	}
 
-	@RequestMapping(value = "/player", method = RequestMethod.POST)
+	@PostMapping(value = "/player")
 	public @ResponseBody
 	Player createPlayer(@RequestParam(value = "firstname", required = true) String firstName,
 						@RequestParam(value = "lastname", required = true) String lastName,
@@ -42,7 +48,7 @@ public class PlayerController {
 		return player;
 	}
 
-	@RequestMapping(value="/player/{id}",method= RequestMethod.PATCH)
+	@PatchMapping(value="/player/{id}")
 	public @ResponseBody
 	Player updatePlayer(@PathVariable("id") long PlayerId,
 						@RequestParam(value="firstname",required=false)String firstName,
@@ -91,14 +97,14 @@ public class PlayerController {
 		return null;
 	}
 
-	@RequestMapping(value="/player/{id}",method= RequestMethod.GET)
+	@GetMapping(value="/player/{id}")
 	public @ResponseBody
 	String getPlayerDetails(@PathVariable("id") long PlayerId) {
 
 		return playerService.getPlayer(PlayerId).toString();
 	}
 
-	@RequestMapping(value="/player/{id}",method= RequestMethod.DELETE)
+	@DeleteMapping(value="/player/{id}")
 	public @ResponseBody
 	String deletePlayer(@PathVariable("id") long PlayerId) {
 
@@ -106,7 +112,7 @@ public class PlayerController {
 
 		return "Deleted Successfully!";
 	}
-	@RequestMapping(value="/opponents/{id1}/{id2}",method= RequestMethod.GET)
+	@GetMapping(value="/opponents/{id1}/{id2}")
 	public @ResponseBody
 	String insertOpponent(@PathVariable("id1") long PlayerId1, @PathVariable("id2") long PlayerId2) {
 		Player player1 = playerService.getPlayer(PlayerId1);
@@ -127,7 +133,7 @@ public class PlayerController {
 		return "Successfully added opponent";
 	}
 
-	@RequestMapping(value="/opponents/{id1}/{id2}",method= RequestMethod.DELETE)
+	@DeleteMapping(value="/opponents/{id1}/{id2}")
 	public @ResponseBody
 	String removeOponent(@PathVariable("id1") long PlayerId1, @PathVariable("id2") long PlayerId2) {
 		Player player1 = playerService.getPlayer(PlayerId1);

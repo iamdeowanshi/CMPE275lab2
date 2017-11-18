@@ -12,7 +12,7 @@ public class SponsorController {
 	@Autowired
 	private SponsorService sponsorService;
 
-	@RequestMapping(value = "/sponsor", method = RequestMethod.POST)
+	@PostMapping(value = "/sponsor")
 	public @ResponseBody
 	Sponsor newPlayer(@RequestParam(value = "name", required = true) String name,
 					  @RequestParam(value = "description", required = false) String description,
@@ -26,7 +26,7 @@ public class SponsorController {
 		return sponsor;
 	}
 
-	@RequestMapping(value = "/sponsor/{id}", method = RequestMethod.PATCH)
+	@PatchMapping(value = "/sponsor/{id}")
 	public @ResponseBody
     Sponsor updateSponsor(@PathVariable("id") long SponsorId,
                           @RequestParam(value = "name", required = false) String name,
@@ -65,7 +65,7 @@ public class SponsorController {
 		return null;
 	}
 
-	@RequestMapping(value = "/sponsor/{id}", method = RequestMethod.GET)
+	@GetMapping(value = "/sponsor/{id}")
 	public @ResponseBody
     Sponsor getSponsorDetails(@PathVariable("id") long SponsorId) {
 
@@ -74,7 +74,7 @@ public class SponsorController {
 		return sponsor;
 	}
 
-	@RequestMapping(value = "/sponsor/{id}", method = RequestMethod.DELETE)
+	@DeleteMapping(value = "/sponsor/{id}")
 	public @ResponseBody
     String deleteSponsor(@PathVariable("id") long SponsorId) {
 
