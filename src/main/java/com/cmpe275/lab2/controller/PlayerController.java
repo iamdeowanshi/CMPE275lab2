@@ -59,7 +59,7 @@ public class PlayerController {
 						@RequestParam(value = "city", required = false) String city,
 						@RequestParam(value = "state", required = false) String state,
 						@RequestParam(value = "zip", required = false) String zip,
-                        @RequestParam(value = "sponsor_id") Long sponsorId) {
+                        			@RequestParam(value = "sponsor") Long sponsorId, , required = false) {
 
 		Player player = this.playerService.getPlayer(PlayerId);
 
@@ -112,7 +112,7 @@ public class PlayerController {
 
 		return "Deleted Successfully!";
 	}
-	@GetMapping(value="/opponents/{id1}/{id2}")
+	@PutMapping(value="/opponents/{id1}/{id2}")
 	public @ResponseBody
 	String insertOpponent(@PathVariable("id1") long PlayerId1, @PathVariable("id2") long PlayerId2) {
 		Player player1 = playerService.getPlayer(PlayerId1);
