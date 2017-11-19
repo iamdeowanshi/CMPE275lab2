@@ -36,4 +36,5 @@ public class SponsorServiceImpl implements SponsorService {
 	public Sponsor updateSponsor(Sponsor sponsor) {
 		return sponsorDAO.save(sponsor);
 	}
+
 }

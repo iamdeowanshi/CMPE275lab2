@@ -19,4 +19,8 @@ public enum  HttpResponse {
     public ResponseEntity response() {
         return ResponseEntity.status(code).body(message);
     }
+
+    public ResponseEntity response(String message) {
+        return ResponseEntity.status(code).body(message);
+    }
 }

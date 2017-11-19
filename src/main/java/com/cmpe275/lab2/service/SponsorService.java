@@ -12,4 +12,5 @@ public interface SponsorService {
     Sponsor getSponsor(long sponsorId);
  
     Sponsor updateSponsor(Sponsor sponsor);
+
 }

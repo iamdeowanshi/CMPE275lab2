@@ -12,4 +12,6 @@ public interface PlayerService {
     Player getPlayer(long playerId);
  
     Player updatePlayer(Player player);
+
+    Player checkEmail(String email);
 }

@@ -5,6 +5,7 @@ import com.cmpe275.lab2.model.Sponsor;
 import com.cmpe275.lab2.service.PlayerService;
 import com.cmpe275.lab2.service.SponsorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -37,16 +38,23 @@ public class PlayerController {
 									   @RequestParam(value = "sponsor", required = false) Long sponsorId) {
 
 		try {
-			Sponsor sponsor = sponsorService.getSponsor(sponsorId);
+            Sponsor sponsor = null;
+		    if (sponsorId != null)
+			    sponsor = sponsorService.getSponsor(sponsorId);
 
-			Player player = new Player(firstName,lastName,email,description,street,city,state,zip);
+            Player player = playerService.checkEmail(email);
+
+            if( player != null)
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already Exist");
+
+			player = new Player(firstName,lastName,email,description,street,city,state,zip);
 
 			if (sponsorId != null)
 				player.setSponsor(sponsor);
 
 			playerService.addPlayer(player);
 
-			return ResponseEntity.ok(player);
+			return ResponseEntity.status(HttpStatus.CREATED).body(player);
 		}catch(Exception e) {
 			return HttpResponse.BAD_REQUEST.response();
 		}
@@ -65,7 +73,10 @@ public class PlayerController {
 						@RequestParam(value = "sponsor", required = false) Long sponsorId) {
 		try {
 
-			Sponsor sponsor = sponsorService.getSponsor(sponsorId);
+            Sponsor sponsor = null;
+            if (sponsorId != null)
+                sponsor = sponsorService.getSponsor(sponsorId);
+
 			Player player = playerService.getPlayer(PlayerId);
 
 			player.setFirstName(firstName);
@@ -98,7 +109,7 @@ public class PlayerController {
 			return ResponseEntity.ok(player);
 
 		}catch(Exception e) {
-			return HttpResponse.NOT_FOUND.response();
+			return HttpResponse.NOT_FOUND.response("Player Not Found");
 		}
 	}
 
@@ -122,7 +133,7 @@ public class PlayerController {
 			return ResponseEntity.ok(player);
 
 		} catch (Exception e) {
-			return HttpResponse.NOT_FOUND.response();
+			return HttpResponse.NOT_FOUND.response("Player Not found");
 		}
 	}
 

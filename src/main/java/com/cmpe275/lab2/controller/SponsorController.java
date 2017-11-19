@@ -29,7 +29,7 @@ public class SponsorController {
 			Sponsor sponsor = new Sponsor(name, description, street, city, state, zip);
 			sponsorService.addSponsor(sponsor);
 
-			return ResponseEntity.ok(sponsor);
+			return ResponseEntity.status(HttpStatus.CREATED).body(sponsor);
 
 		}catch(Exception e) {
 			return HttpResponse.BAD_REQUEST.response();

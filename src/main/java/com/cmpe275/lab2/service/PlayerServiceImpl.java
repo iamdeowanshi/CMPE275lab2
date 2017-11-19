@@ -38,4 +38,9 @@ public class PlayerServiceImpl implements PlayerService {
 		return playerDAO.save(player);
 	}
 
+	@Override
+	public Player checkEmail(String email) {
+		return (playerDAO.findByEmailAddress(email));
+	}
+
 }
