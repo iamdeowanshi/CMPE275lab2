@@ -136,6 +136,8 @@ public class PlayerController {
 			playerService.updatePlayer(player);
 			playerService.deletePlayer(PlayerId);
 
+            player.setAddress(new Address(player.getStreet(),player.getCity(),player.getState(),player.getZip()));
+            player.setOpponent(player.getOpponents());
 			return ResponseEntity.ok(player);
 
 		} catch (Exception e) {

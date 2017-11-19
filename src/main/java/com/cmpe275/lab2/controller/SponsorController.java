@@ -91,6 +91,7 @@ public class SponsorController {
             }
             sponsorService.deleteSponsor(SponsorId);
 
+            sponsor.setAddress(new Address(sponsor.getStreet(),sponsor.getCity(),sponsor.getState(),sponsor.getZip()));
             return ResponseEntity.ok(sponsor);
         }catch(Exception e) {
             return HttpResponse.NOT_FOUND.response();
