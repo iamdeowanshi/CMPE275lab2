@@ -1,5 +1,6 @@
 package com.cmpe275.lab2.controller;
 
+import com.cmpe275.lab2.model.Address;
 import com.cmpe275.lab2.model.Player;
 import com.cmpe275.lab2.model.Sponsor;
 import com.cmpe275.lab2.service.PlayerService;
@@ -38,6 +39,10 @@ public class PlayerController {
 									   @RequestParam(value = "sponsor", required = false) Long sponsorId) {
 
 		try {
+
+		    if (firstName.trim().isEmpty() || lastName.trim().isEmpty() || email.trim().isEmpty())
+                return HttpResponse.BAD_REQUEST.response("Invalid field values");
+
             Sponsor sponsor = null;
 		    if (sponsorId != null)
 			    sponsor = sponsorService.getSponsor(sponsorId);
@@ -62,10 +67,10 @@ public class PlayerController {
 
 	@PostMapping(value="/player/{id}")
 	public ResponseEntity updatePlayer(@PathVariable("id") long PlayerId,
-						@RequestParam(value="firstname",required=true)String firstName,
-						@RequestParam(value = "lastname", required = true) String lastName,
+						@RequestParam(value="firstname")String firstName,
+						@RequestParam(value = "lastname") String lastName,
 						@RequestParam(value = "description", required = false) String description,
-						@RequestParam(value = "email", required = true) String email,
+						@RequestParam(value = "email") String email,
 						@RequestParam(value = "street", required = false) String street,
 						@RequestParam(value = "city", required = false) String city,
 						@RequestParam(value = "state", required = false) String state,
@@ -104,8 +109,9 @@ public class PlayerController {
 	@GetMapping(value="/player/{id}")
 	public ResponseEntity getPlayerDetails(@PathVariable("id") long PlayerId) {
 		try {
-			String player = playerService.getPlayer(PlayerId).toString();
-
+			Player player = playerService.getPlayer(PlayerId);
+            player.setAddress(new Address(player.getStreet(),player.getCity(),player.getState(),player.getZip()));
+            player.setOpponent(player.getOpponents());
 			return ResponseEntity.ok(player);
 
 		}catch(Exception e) {

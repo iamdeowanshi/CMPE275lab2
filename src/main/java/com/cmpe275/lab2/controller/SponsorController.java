@@ -1,5 +1,6 @@
 package com.cmpe275.lab2.controller;
 
+import com.cmpe275.lab2.model.Address;
 import com.cmpe275.lab2.model.Player;
 import com.cmpe275.lab2.model.Sponsor;
 import com.cmpe275.lab2.service.PlayerService;
@@ -19,7 +20,7 @@ public class SponsorController {
     private PlayerService playerService;
 
 	@PostMapping(value = "/sponsor")
-	public ResponseEntity newPlayer(@RequestParam(value = "name", required = true) String name,
+	public ResponseEntity insertSponsor(@RequestParam(value = "name") String name,
 									@RequestParam(value = "description", required = false) String description,
 									@RequestParam(value = "street", required = false) String street,
 									@RequestParam(value = "city", required = false) String city,
@@ -38,7 +39,7 @@ public class SponsorController {
 
 	@PatchMapping(value = "/sponsor/{id}")
 	public ResponseEntity updateSponsor(@PathVariable("id") long SponsorId,
-                          @RequestParam(value = "name", required = false) String name,
+                          @RequestParam(value = "name") String name,
                           @RequestParam(value = "description", required = false) String description,
                           @RequestParam(value = "street", required = false) String street,
                           @RequestParam(value = "city", required = false) String city,
@@ -69,9 +70,11 @@ public class SponsorController {
         try {
             Sponsor sponsor = sponsorService.getSponsor(SponsorId);
 
+            sponsor.setAddress(new Address(sponsor.getStreet(),sponsor.getCity(),sponsor.getState(),sponsor.getZip()));
+
             return  (sponsor == null) ?
                     HttpResponse.NOT_FOUND.response():
-                    ResponseEntity.ok(sponsor.toString());
+                    ResponseEntity.status(HttpStatus.OK).body(sponsor);
         }catch(Exception e) {
             return HttpResponse.NOT_FOUND.response();
         }

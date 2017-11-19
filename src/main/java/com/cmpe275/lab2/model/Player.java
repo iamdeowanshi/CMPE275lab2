@@ -22,22 +22,30 @@ public class Player {
     private String email;
     @Column(name = "description")
     private String description;
-
+    @JsonIgnore
     @Column(name = "street")
     private String street;
+    @JsonIgnore
     @Column(name = "city")
     private String city;
+    @JsonIgnore
     @Column(name = "state")
     private String state;
+    @JsonIgnore
     @Column(name = "zip")
     private String zip;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinTable(name = "player_sponsor")
     private Sponsor sponsor;
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "player_opponent")
     private List<Player> opponents;
+    @Transient
+    private Address address;
+    @Transient
+    private String opponent;
 
     public Player() {
         super();
@@ -53,6 +61,7 @@ public class Player {
         this.state = state;
         this.zip = zip;
         this.street = street;
+        this.address = new Address(street,city,state,zip);
     }
 
 
@@ -145,20 +154,28 @@ public class Player {
         this.opponents = opponents;
     }
 
-    @Override
-    public String toString() {
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public void setOpponent(List<Player> opponents) {
         String opp = "[";
         for (Player opponent : opponents) {
             opp += opponent.getId() + ",";
         }
-        opp = opp.substring(0, opp.length() - 1);
+        if (opponents.size() > 0)
+            opp = opp.substring(0, opp.length() - 1);
         opp += "]";
 
-        return "{id:" + id + ", firstName:" + firstName + ", lastName:" + lastName + ", email:" + email
-                + ", description:" + description + ", street:" + street + ", city:" + city + ", state:" + state + ", zip:" + zip +
-                ", sponsor:" + sponsor + ", opponents:"
-                + opp + "}";
+        this.opponent = opp;
     }
 
+    public String getOpponent() {
+        return opponent;
+    }
 }
 

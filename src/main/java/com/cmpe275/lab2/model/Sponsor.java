@@ -1,5 +1,6 @@
 package com.cmpe275.lab2.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -17,16 +18,22 @@ public class Sponsor {
     private String name;
     @Column(name="description")
     private String description;
+    @JsonIgnore
     @Column(name = "street")
     private String street;
+    @JsonIgnore
     @Column(name = "city")
     private String city;
+    @JsonIgnore
     @Column(name = "state")
     private String state;
+    @JsonIgnore
     @Column(name = "zip")
     private String zip;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "sponsor")
     private List<Player> players;
+    @Transient
+    private Address address;
 
     public Sponsor() {
         super();
@@ -40,6 +47,7 @@ public class Sponsor {
         this.state = state;
         this.zip = zip;
         this.street = street;
+        this.address = new Address(street,city,state,zip);
     }
 
     public long getId() {
@@ -104,5 +112,13 @@ public class Sponsor {
 
     public void setPlayers(List<Player> players) {
         this.players = players;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }
