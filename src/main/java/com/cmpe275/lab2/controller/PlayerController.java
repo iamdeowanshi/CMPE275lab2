@@ -5,7 +5,6 @@ import com.cmpe275.lab2.model.Sponsor;
 import com.cmpe275.lab2.service.PlayerService;
 import com.cmpe275.lab2.service.SponsorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -49,7 +48,7 @@ public class PlayerController {
 
 			return ResponseEntity.ok(player);
 		}catch(Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("400 Bad Request");
+			return HttpResponse.BAD_REQUEST.response();
 		}
 	}
 
@@ -84,10 +83,10 @@ public class PlayerController {
 			if (player != null)
 				return ResponseEntity.ok(playerService.updatePlayer(player));
 
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("404 Not Found");
+			return HttpResponse.NOT_FOUND.response();
 
 		} catch(Exception e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("404 Not Found");
+			return HttpResponse.NOT_FOUND.response();
 		}
 	}
 
@@ -99,7 +98,7 @@ public class PlayerController {
 			return ResponseEntity.ok(player);
 
 		}catch(Exception e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("404 Not Found");
+			return HttpResponse.NOT_FOUND.response();
 		}
 	}
 
@@ -123,7 +122,7 @@ public class PlayerController {
 			return ResponseEntity.ok(player);
 
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("404 Not Found");
+			return HttpResponse.NOT_FOUND.response();
 		}
 	}
 
@@ -153,7 +152,7 @@ public class PlayerController {
 			return ResponseEntity.ok("Successfully added opponent!");
 
 		}catch(Exception e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("404 Not Found");
+			return HttpResponse.NOT_FOUND.response();
 		}
 	}
 
@@ -189,10 +188,10 @@ public class PlayerController {
 
 			return isRemoved ?
 					ResponseEntity.ok("Successfully Removed Opponent!") :
-					ResponseEntity.status(HttpStatus.NOT_FOUND).body("404 Not Found");
+                    HttpResponse.NOT_FOUND.response();
 
 		}catch(Exception e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("404 Not Found");
+			return HttpResponse.NOT_FOUND.response();
 		}
 	}
 }

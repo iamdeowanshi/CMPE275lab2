@@ -32,7 +32,7 @@ public class SponsorController {
 			return ResponseEntity.ok(sponsor);
 
 		}catch(Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("400 Bad Request");
+			return HttpResponse.BAD_REQUEST.response();
 		}
 	}
 
@@ -57,10 +57,10 @@ public class SponsorController {
 
             return  (sponsor != null) ?
                     ResponseEntity.ok(sponsorService.updateSponsor(sponsor)) :
-                    ResponseEntity.status(HttpStatus.NOT_FOUND).body("404 Not Found");
+                    HttpResponse.NOT_FOUND.response();
 
         }catch(Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("404 Not Found");
+            return HttpResponse.NOT_FOUND.response();
         }
 	}
 
@@ -70,10 +70,10 @@ public class SponsorController {
             Sponsor sponsor = sponsorService.getSponsor(SponsorId);
 
             return  (sponsor == null) ?
-                    ResponseEntity.status(HttpStatus.NOT_FOUND).body("404 Not Found"):
+                    HttpResponse.NOT_FOUND.response():
                     ResponseEntity.ok(sponsor.toString());
         }catch(Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("404 Not Found");
+            return HttpResponse.NOT_FOUND.response();
         }
 	}
 
@@ -90,7 +90,7 @@ public class SponsorController {
 
             return ResponseEntity.ok(sponsor);
         }catch(Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("404 Not Found");
+            return HttpResponse.NOT_FOUND.response();
         }
 	}
 }
