@@ -5,6 +5,8 @@ import com.cmpe275.lab2.model.Sponsor;
 import com.cmpe275.lab2.service.PlayerService;
 import com.cmpe275.lab2.service.SponsorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,32 +27,34 @@ public class PlayerController {
 	}
 
 	@PostMapping(value = "/player")
-	public @ResponseBody
-	Player createPlayer(@RequestParam(value = "firstname", required = true) String firstName,
-						@RequestParam(value = "lastname", required = true) String lastName,
-						@RequestParam(value = "description", required = false) String description,
-						@RequestParam(value = "email", required = true) String email,
-						@RequestParam(value = "street", required = false) String street,
-						@RequestParam(value = "city", required = false) String city,
-						@RequestParam(value = "state", required = false) String state,
-						@RequestParam(value = "zip", required = false) String zip,
-                        @RequestParam(value = "sponsor", required = false) Long sponsorId) {
+	public ResponseEntity createPlayer(@RequestParam(value = "firstname", required = true) String firstName,
+									   @RequestParam(value = "lastname", required = true) String lastName,
+									   @RequestParam(value = "description", required = false) String description,
+									   @RequestParam(value = "email", required = true) String email,
+									   @RequestParam(value = "street", required = false) String street,
+									   @RequestParam(value = "city", required = false) String city,
+									   @RequestParam(value = "state", required = false) String state,
+									   @RequestParam(value = "zip", required = false) String zip,
+									   @RequestParam(value = "sponsor", required = false) Long sponsorId) {
 
-		Player player = new Player(firstName,lastName,email,description,street,city,state,zip);
+		try {
+			Sponsor sponsor = sponsorService.getSponsor(sponsorId);
 
-		if (sponsorId != null) {
-            Sponsor sponsor = sponsorService.getSponsor(sponsorId);
+			Player player = new Player(firstName,lastName,email,description,street,city,state,zip);
 
-            player.setSponsor(sponsor);
-        }
-		playerService.addPlayer(player);
+			if (sponsorId != null)
+				player.setSponsor(sponsor);
 
-		return player;
+			playerService.addPlayer(player);
+
+			return ResponseEntity.ok(player);
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("400 Bad Request");
+		}
 	}
 
 	@PostMapping(value="/player/{id}")
-	public @ResponseBody
-	Player updatePlayer(@PathVariable("id") long PlayerId,
+	public ResponseEntity updatePlayer(@PathVariable("id") long PlayerId,
 						@RequestParam(value="firstname",required=true)String firstName,
 						@RequestParam(value = "lastname", required = true) String lastName,
 						@RequestParam(value = "description", required = false) String description,
@@ -59,109 +63,136 @@ public class PlayerController {
 						@RequestParam(value = "city", required = false) String city,
 						@RequestParam(value = "state", required = false) String state,
 						@RequestParam(value = "zip", required = false) String zip,
-                        	@RequestParam(value = "sponsor", required = false) Long sponsorId) {
+						@RequestParam(value = "sponsor", required = false) Long sponsorId) {
+		try {
 
-		Player player = this.playerService.getPlayer(PlayerId);
+			Sponsor sponsor = sponsorService.getSponsor(sponsorId);
+			Player player = playerService.getPlayer(PlayerId);
 
-		if (player != null) {
-			if (firstName != null) {
-				player.setFirstName(firstName);
-			}
-			if (lastName != null) {
-				player.setLastName(lastName);
-			}
-			if (description != null) {
-				player.setDescription(description);
-			}
-			if (street != null) {
-				player.setStreet(street);
-			}
-			if (city != null) {
-				player.setCity(city);
+			player.setFirstName(firstName);
+			player.setLastName(lastName);
+			player.setEmail(email);
 
-			}if (state != null) {
-				player.setState(state);
+			player.setSponsor(sponsor);
+			player.setCity(city);
+			player.setStreet(street);
+			player.setState(state);
+			player.setZip(zip);
+			player.setDescription(description);
 
-			}if (zip != null) {
-				player.setZip(zip);
 
-			}if (sponsorId != null) {
-                Sponsor sponsor = sponsorService.getSponsor(sponsorId);
+			if (player != null)
+				return ResponseEntity.ok(playerService.updatePlayer(player));
 
-                player.setSponsor(sponsor);
-            }
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("404 Not Found");
 
-			return playerService.updatePlayer(player);
+		} catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("404 Not Found");
 		}
-
-		return null;
 	}
 
 	@GetMapping(value="/player/{id}")
-	public @ResponseBody
-	String getPlayerDetails(@PathVariable("id") long PlayerId) {
+	public ResponseEntity getPlayerDetails(@PathVariable("id") long PlayerId) {
+		try {
+			String player = playerService.getPlayer(PlayerId).toString();
 
-		return playerService.getPlayer(PlayerId).toString();
+			return ResponseEntity.ok(player);
+
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("404 Not Found");
+		}
 	}
 
 	@DeleteMapping(value="/player/{id}")
-	public @ResponseBody
-	String deletePlayer(@PathVariable("id") long PlayerId) {
+	public ResponseEntity deletePlayer(@PathVariable("id") long PlayerId) {
+		try {
+			Player player = this.playerService.getPlayer(PlayerId);
+			if(player.getSponsor()!=null) {
+				player.getSponsor().getPlayers().remove(player.getSponsor().getPlayers().indexOf(player));
+				sponsorService.updateSponsor(player.getSponsor());
+			}
+			for(Player player2:player.getOpponents()) {
+				player2.getOpponents().remove(player2.getOpponents().indexOf(player));
+				playerService.updatePlayer(player2);
+			}
 
-		playerService.deletePlayer(PlayerId);
+			player.setOpponents(null);
+			playerService.updatePlayer(player);
+			playerService.deletePlayer(PlayerId);
 
-		return "Deleted Successfully!";
+			return ResponseEntity.ok(player);
+
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("404 Not Found");
+		}
 	}
+
 	@PutMapping(value="/opponents/{id1}/{id2}")
-	public @ResponseBody
-	String insertOpponent(@PathVariable("id1") long PlayerId1, @PathVariable("id2") long PlayerId2) {
-		Player player1 = playerService.getPlayer(PlayerId1);
-		Player player2 = playerService.getPlayer(PlayerId2);
+	public ResponseEntity insertOpponent(@PathVariable("id1") long PlayerId1, @PathVariable("id2") long PlayerId2) {
+		try {
+			Player player1 = playerService.getPlayer(PlayerId1);
+			Player player2 = playerService.getPlayer(PlayerId2);
 
-		if(player1.getOpponents()==null)
-			player1.setOpponents(new ArrayList<>());
+			if(player1.getOpponents()==null)
+				player1.setOpponents(new ArrayList<>());
 
-		if(player2.getOpponents()==null)
-			player2.setOpponents(new ArrayList<>());
+			if(player2.getOpponents()==null)
+				player2.setOpponents(new ArrayList<>());
 
-		player1.getOpponents().add(player2);
-		player2.getOpponents().add(player1);
+			for(Player opponent: player1.getOpponents()) {
+				if (opponent.getId()==(player2.getId()))
+					return ResponseEntity.ok("Already added opponent!");
+			}
 
-		playerService.updatePlayer(player1);
-		playerService.updatePlayer(player2);
+			player1.getOpponents().add(player2);
+			player2.getOpponents().add(player1);
 
-		return "Successfully added opponent";
+			playerService.updatePlayer(player1);
+			playerService.updatePlayer(player2);
+
+			return ResponseEntity.ok("Successfully added opponent!");
+
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("404 Not Found");
+		}
 	}
 
 	@DeleteMapping(value="/opponents/{id1}/{id2}")
-	public @ResponseBody
-	String removeOponent(@PathVariable("id1") long PlayerId1, @PathVariable("id2") long PlayerId2) {
+	public ResponseEntity removeOpponent(@PathVariable("id1") long PlayerId1, @PathVariable("id2") long PlayerId2) {
 		Player player1 = playerService.getPlayer(PlayerId1);
 		Player player2 = playerService.getPlayer(PlayerId2);
-		boolean flag = false;
 
-		int i=0;
-		for(Player opponent: player1.getOpponents()) {
-			if (opponent.getId()==(player2.getId())) {
-				player1.getOpponents().remove(i);
-				flag = true;
-				break;
+		boolean isRemoved = false;
+
+		try {
+			int i=0;
+			for(Player opponent: player1.getOpponents()) {
+				if (opponent.getId()==(player2.getId())) {
+					player1.getOpponents().remove(i);
+					isRemoved = true;
+					break;
+
+				}
+				++i;
 			}
-			++i;
-		}
-
-		i=0;
-		for(Player opponent: player2.getOpponents()) {
-			if (opponent.getId()==(player1.getId())) {
-				player2.getOpponents().remove(i);
-				break;
+			i=0;
+			for(Player opponent: player2.getOpponents()) {
+				if (opponent.getId()==(player1.getId())) {
+					player2.getOpponents().remove(i);
+					break;
+				}
+				++i;
 			}
-			++i;
+
+			playerService.updatePlayer(player1);
+			playerService.updatePlayer(player2);
+
+			return isRemoved ?
+					ResponseEntity.ok("Successfully Removed Opponent!") :
+					ResponseEntity.status(HttpStatus.NOT_FOUND).body("404 Not Found");
+
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("404 Not Found");
 		}
-
-		playerService.updatePlayer(player1);
-		playerService.updatePlayer(player2);
-
-		return flag ? "Removed Opponent Successfully" : "Players are not Opponents";
 	}
 }

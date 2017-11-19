@@ -98,4 +98,11 @@ public class Sponsor {
         this.zip = zip;
     }
 
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(List<Player> players) {
+        this.players = players;
+    }
 }
