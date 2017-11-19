@@ -25,7 +25,7 @@ public class Sponsor {
     private String state;
     @Column(name = "zip")
     private String zip;
-    @OneToMany(mappedBy="sponsor")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "sponsor")
     private List<Player> players;
 
     public Sponsor() {

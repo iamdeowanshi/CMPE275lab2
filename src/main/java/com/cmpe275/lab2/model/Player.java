@@ -32,10 +32,10 @@ public class Player {
     @Column(name = "zip")
     private String zip;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinTable(name = "player_sponsor")
     private Sponsor sponsor;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "player_opponent")
     private List<Player> opponents;
 
