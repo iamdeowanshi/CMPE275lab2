@@ -30,6 +30,7 @@ public class Sponsor {
     @JsonIgnore
     @Column(name = "zip")
     private String zip;
+    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "sponsor")
     private List<Player> players;
     @Transient
