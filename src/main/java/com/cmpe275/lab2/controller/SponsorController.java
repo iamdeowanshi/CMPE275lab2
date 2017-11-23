@@ -37,7 +37,7 @@ public class SponsorController {
 		}
 	}
 
-	@PatchMapping(value = "/sponsor/{id}")
+	@PostMapping(value = "/sponsor/{id}")
 	public ResponseEntity updateSponsor(@PathVariable("id") long SponsorId,
                           @RequestParam(value = "name") String name,
                           @RequestParam(value = "description", required = false) String description,
