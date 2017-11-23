@@ -1,6 +1,6 @@
 # Spring Boot, MySQL, JPA, Hibernate Rest API Tutorial
 
-Build Restful CRUD API for a simple Note-Taking application using Spring Boot, Postgres, JPA and Hibernate.
+Build Restful CRUD API for a game application using Spring Boot, Postgres, JPA and Hibernate.
 
 ## Requirements
 
@@ -8,7 +8,7 @@ Build Restful CRUD API for a simple Note-Taking application using Spring Boot, P
 
 2. Maven - 3.x.x
 
-3. Postgres - 5.x.x
+3. Postgres - 4.x.x
 
 ## Steps to Setup
 
