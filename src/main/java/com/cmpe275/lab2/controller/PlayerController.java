@@ -44,11 +44,12 @@ public class PlayerController {
                 return HttpResponse.BAD_REQUEST.response("Invalid field values");
 
             Sponsor sponsor = null;
-		    if (sponsorId != null)
-			    sponsor = sponsorService.getSponsor(sponsorId);
+		    if (sponsorId != null) {
+                sponsor = sponsorService.getSponsor(sponsorId);
 
-            if (sponsor == null)
+                if (sponsor == null)
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sponsor not found");
+            }
 
             Player player = playerService.checkEmail(email);
 
@@ -82,11 +83,12 @@ public class PlayerController {
 		try {
 
             Sponsor sponsor = null;
-            if (sponsorId != null)
+            if (sponsorId != null) {
                 sponsor = sponsorService.getSponsor(sponsorId);
 
-            if (sponsor == null)
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sponsor not found");
+                if (sponsor == null)
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sponsor not found");
+            }
 
 			Player player = playerService.getPlayer(PlayerId);
 
