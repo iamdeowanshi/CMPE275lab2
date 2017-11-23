@@ -47,6 +47,9 @@ public class PlayerController {
 		    if (sponsorId != null)
 			    sponsor = sponsorService.getSponsor(sponsorId);
 
+            if (sponsor == null)
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sponsor not found");
+
             Player player = playerService.checkEmail(email);
 
             if( player != null)
@@ -82,6 +85,9 @@ public class PlayerController {
             if (sponsorId != null)
                 sponsor = sponsorService.getSponsor(sponsorId);
 
+            if (sponsor == null)
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sponsor not found");
+
 			Player player = playerService.getPlayer(PlayerId);
 
 			player.setFirstName(firstName);
@@ -89,10 +95,10 @@ public class PlayerController {
 			player.setEmail(email);
 
 			player.setSponsor(sponsor);
-			player.setCity(city);
-			player.setStreet(street);
-			player.setState(state);
-			player.setZip(zip);
+			player.getAddress().setCity(city);
+			player.getAddress().setStreet(street);
+			player.getAddress().setState(state);
+			player.getAddress().setZip(zip);
 			player.setDescription(description);
 
 
@@ -110,7 +116,6 @@ public class PlayerController {
 	public ResponseEntity getPlayerDetails(@PathVariable("id") long PlayerId) {
 		try {
 			Player player = playerService.getPlayer(PlayerId);
-            player.setAddress(new Address(player.getStreet(),player.getCity(),player.getState(),player.getZip()));
             player.setOpponent(player.getOpponents());
 			return ResponseEntity.ok(player);
 
@@ -136,10 +141,6 @@ public class PlayerController {
 			playerService.updatePlayer(player);
 			playerService.deletePlayer(PlayerId);
 
-
-
-            player.setAddress(new Address(player.getStreet(),player.getCity(),player.getState(),player.getZip()));
-
             return ResponseEntity.ok(player);
 
 		} catch (Exception e) {
@@ -150,6 +151,9 @@ public class PlayerController {
 	@PutMapping(value="/opponents/{id1}/{id2}")
 	public ResponseEntity insertOpponent(@PathVariable("id1") long PlayerId1, @PathVariable("id2") long PlayerId2) {
 		try {
+
+		    if (PlayerId1 == PlayerId2)
+		        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Player can't be opponent of itself");
 			Player player1 = playerService.getPlayer(PlayerId1);
 			Player player2 = playerService.getPlayer(PlayerId2);
 

@@ -22,19 +22,6 @@ public class Player {
     private String email;
     @Column(name = "description")
     private String description;
-    @JsonIgnore
-    @Column(name = "street")
-    private String street;
-    @JsonIgnore
-    @Column(name = "city")
-    private String city;
-    @JsonIgnore
-    @Column(name = "state")
-    private String state;
-    @JsonIgnore
-    @Column(name = "zip")
-    private String zip;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinTable(name = "player_sponsor")
     private Sponsor sponsor;
@@ -42,7 +29,7 @@ public class Player {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "player_opponent")
     private List<Player> opponents;
-    @Transient
+    @Embedded
     private Address address;
     @Transient
     private String opponent;
@@ -57,10 +44,6 @@ public class Player {
         this.lastName = lastName;
         this.email = email;
         this.description = description;
-        this.city = city;
-        this.state = state;
-        this.zip = zip;
-        this.street = street;
         this.address = new Address(street,city,state,zip);
     }
 
@@ -103,38 +86,6 @@ public class Player {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getZip() {
-        return zip;
-    }
-
-    public void setZip(String zip) {
-        this.zip = zip;
     }
 
     public Sponsor getSponsor() {

@@ -27,6 +27,9 @@ public class SponsorController {
 									@RequestParam(value = "state", required = false) String state,
 									@RequestParam(value = "zip", required = false) String zip) {
 		try {
+		    if (name.trim().isEmpty())
+                return HttpResponse.BAD_REQUEST.response("Invalid field values");
+
 			Sponsor sponsor = new Sponsor(name, description, street, city, state, zip);
 			sponsorService.addSponsor(sponsor);
 
@@ -49,12 +52,15 @@ public class SponsorController {
         try {
             Sponsor sponsor = sponsorService.getSponsor(SponsorId);
 
+            if (name.trim().isEmpty())
+                return HttpResponse.BAD_REQUEST.response("Invalid field values");
+
             sponsor.setName(name);
             sponsor.setDescription(description);
-            sponsor.setStreet(street);
-            sponsor.setCity(city);
-            sponsor.setState(state);
-            sponsor.setZip(zip);
+            sponsor.getAddress().setStreet(street);
+            sponsor.getAddress().setCity(city);
+            sponsor.getAddress().setState(state);
+            sponsor.getAddress().setZip(zip);
 
             return  (sponsor != null) ?
                     ResponseEntity.ok(sponsorService.updateSponsor(sponsor)) :
@@ -69,8 +75,6 @@ public class SponsorController {
 	public ResponseEntity getSponsorDetails(@PathVariable("id") long SponsorId) {
         try {
             Sponsor sponsor = sponsorService.getSponsor(SponsorId);
-
-            sponsor.setAddress(new Address(sponsor.getStreet(),sponsor.getCity(),sponsor.getState(),sponsor.getZip()));
 
             return  (sponsor == null) ?
                     HttpResponse.NOT_FOUND.response():
@@ -91,7 +95,6 @@ public class SponsorController {
             }
             sponsorService.deleteSponsor(SponsorId);
 
-            sponsor.setAddress(new Address(sponsor.getStreet(),sponsor.getCity(),sponsor.getState(),sponsor.getZip()));
             return ResponseEntity.ok(sponsor);
         }catch(Exception e) {
             return HttpResponse.NOT_FOUND.response();
